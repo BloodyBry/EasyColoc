@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->web([
+            \App\Http\Middleware\EnsureUserNotBanned::class,
+        ]);
+
+        $middleware->alias([
+            'global_admin' => \App\Http\Middleware\EnsureGlobalAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
