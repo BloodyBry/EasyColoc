@@ -3,8 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Colocation extends Model
 {
-    //
+    protected $fillable = ['name', 'status', 'owner_id'];
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function members(): BelongsToMany 
+    {
+        return $this->belongsToMany(User::class)->withPivot(['role', 'joined_at', 'left_at'])->withTimestamps();
+    }
 }
