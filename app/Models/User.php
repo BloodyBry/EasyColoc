@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Colocation;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -47,4 +51,26 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    public function ownedColocations(): HasMany
+    {
+        return $this->hasMany(Colocation::class, 'owner_id');
+    }
+
+    public function colocations(): BelongsToMany
+    {
+        return $this->belongsToMany(Colocation::class)
+            ->withPivot(['role', 'joined_at', 'left_at'])
+            ->withTimestamps();
+    }
+
+    public function activeColocation(): ?Colocation
+    {
+        return $this->colocations()
+            ->wherePivotNull('left_at')
+            ->where('status', 'active')
+            ->first();
+    }
+    
 }
