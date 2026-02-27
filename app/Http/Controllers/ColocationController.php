@@ -87,4 +87,38 @@ class ColocationController extends Controller
             ->with('status', 'Colocation annulée.');
     }
 
+    public function leave(Colocation $colocation)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $isActiveMember = $colocation->members()
+            ->where('users.id', $user->id)
+            ->wherePivotNull('left_at')
+            ->exists();
+
+        if (!$user->is_global_admin && !$isActiveMember) {
+            abort(403);
+        }
+
+        $isOwner = $colocation->members()
+            ->where('users.id', $user->id)
+            ->wherePivot('role', 'owner')
+            ->wherePivotNull('left_at')
+            ->exists();
+
+        if ($isOwner) {
+            return back()->withErrors([
+                'leave' => "Le owner ne peut pas quitter. Il doit annuler la colocation."
+            ]);
+        }
+
+        $colocation->members()->updateExistingPivot($user->id, [
+            'left_at' => now(),
+        ]);
+
+        return redirect()->route('dashboard')
+            ->with('status', 'Vous avez quitté la colocation.');
+    }
+
 }

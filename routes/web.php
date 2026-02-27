@@ -29,6 +29,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/colocations/{colocation}/cancel', [ColocationController::class, 'cancel'])
         ->name('colocations.cancel');
+
+    Route::post('/colocations/{colocation}/leave', [ColocationController::class, 'leave'])
+    ->name('colocations.leave');
 });
 
 Route::middleware(['auth', 'global_admin'])->group(function () {
