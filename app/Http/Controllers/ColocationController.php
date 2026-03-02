@@ -121,4 +121,80 @@ class ColocationController extends Controller
             ->with('status', 'Vous avez quitté la colocation.');
     }
 
+
+    public function balances(Colocation $colocation)
+    {
+        // $user = auth()->user();
+        $user = Auth::user();
+
+        $isMember = $colocation->members()
+            ->where('users.id', $user->id)
+            ->wherePivotNull('left_at')
+            ->exists();
+
+        if (!$user->is_global_admin && !$isMember) {
+            abort(403);
+        }
+
+        $members = $colocation->members()
+            ->wherePivotNull('left_at')
+            ->get();
+
+        $expenses = $colocation->expenses;
+
+        $total = $expenses->sum('amount');
+        $memberCount = $members->count();
+
+        $share = $memberCount > 0 ? $total / $memberCount : 0;
+
+        $balances = [];
+
+        foreach ($members as $member) {
+            $paid = $expenses
+                ->where('payer_id', $member->id)
+                ->sum('amount');
+
+            $balances[] = [
+                'member' => $member,
+                'paid' => $paid,
+                'balance' => $paid - $share
+            ];
+        }
+
+        $debtors = collect($balances)->filter(fn($b) => $b['balance'] < 0);
+        $creditors = collect($balances)->filter(fn($b) => $b['balance'] > 0);
+
+        $settlements = [];
+
+        foreach ($debtors as $debtor) {
+            foreach ($creditors as $creditor) {
+
+                if ($debtor['balance'] == 0) break;
+                if ($creditor['balance'] == 0) continue;
+
+                $amount = min(
+                    abs($debtor['balance']),
+                    $creditor['balance']
+                );
+
+                $settlements[] = [
+                    'from' => $debtor['member'],
+                    'to' => $creditor['member'],
+                    'amount' => $amount
+                ];
+
+                $debtor['balance'] += $amount;
+                $creditor['balance'] -= $amount;
+            }
+        }
+
+        return view('colocations.balances', compact(
+            'colocation',
+            'balances',
+            'settlements',
+            'total',
+            'share'
+        ));
+    }
+
 }

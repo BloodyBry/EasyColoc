@@ -57,6 +57,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/invite/{token}', [InvitationController::class, 'acceptForm'])->name('invitations.acceptForm');
     Route::post('/invite/{token}', [InvitationController::class, 'accept'])->name('invitations.accept');
 
+    Route::get('/colocations/{colocation}/balances', [ColocationController::class, 'balances'])
+    ->name('colocations.balances')
+    ->middleware('auth');
+
 });
 
 Route::middleware(['auth', 'global_admin'])->group(function () {
