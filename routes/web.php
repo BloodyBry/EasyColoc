@@ -6,6 +6,7 @@ use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\PaymentController;
 
 
 Route::get('/', function () {
@@ -59,6 +60,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/colocations/{colocation}/balances', [ColocationController::class, 'balances'])
     ->name('colocations.balances')
+    ->middleware('auth');
+
+    Route::post('/colocations/{colocation}/payments', [PaymentController::class, 'store'])
+    ->name('payments.store')
     ->middleware('auth');
 
 });

@@ -141,6 +141,7 @@ class ColocationController extends Controller
             ->get();
 
         $expenses = $colocation->expenses;
+        $payments = $colocation->payments()->get();
 
         $total = $expenses->sum('amount');
         $memberCount = $members->count();
@@ -159,6 +160,21 @@ class ColocationController extends Controller
                 'paid' => $paid,
                 'balance' => $paid - $share
             ];
+        }
+
+        // Appliquer les paiements :
+        // - le débiteur (from) remonte vers 0
+        // - le créancier (to) descend vers 0
+        foreach ($payments as $p) {
+            foreach ($balances as &$b) {
+                if ($b['member']->id === $p->from_user_id) {
+                    $b['balance'] += (float) $p->amount;
+                }
+                if ($b['member']->id === $p->to_user_id) {
+                    $b['balance'] -= (float) $p->amount;
+                }
+            }
+            unset($b);
         }
 
         $debtors = collect($balances)->filter(fn($b) => $b['balance'] < 0);

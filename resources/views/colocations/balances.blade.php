@@ -42,16 +42,34 @@
                 <h3 class="font-semibold mb-3">Qui doit à qui</h3>
 
                 @if(empty($settlements))
-                    <p class="text-green-600">Tout est équilibré 🎉</p>
+                    <p class="text-green-600">Tout est équilibré</p>
                 @else
                     @foreach($settlements as $s)
-                        <p class="border-b py-2">
-                            <b>{{ $s['from']->name }}</b>
-                            doit
-                            <b>{{ number_format($s['amount'], 2) }} €</b>
-                            à
-                            <b>{{ $s['to']->name }}</b>
-                        </p>
+                        <div class="border-b py-2 flex items-center justify-between gap-3">
+                            <p>
+                                <b>{{ $s['from']->name }}</b>
+                                doit
+                                <b>{{ number_format($s['amount'], 2) }} €</b>
+                                à
+                                <b>{{ $s['to']->name }}</b>
+                            </p>
+
+                            @if(auth()->user()->is_global_admin || auth()->id() === $s['from']->id)
+                                <form method="POST" action="{{ route('payments.store', $colocation) }}">
+                                    @csrf
+                                    <input type="hidden" name="from_user_id" value="{{ $s['from']->id }}">
+                                    <input type="hidden" name="to_user_id" value="{{ $s['to']->id }}">
+                                    <input type="hidden" name="amount" value="{{ $s['amount'] }}">
+
+                                    <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                                            onclick="return confirm('Confirmer le paiement ?')">
+                                        Marquer payé
+                                    </button>
+                                </form>
+                            @else
+                                <span class="text-gray-400 text-sm">—</span>
+                            @endif
+                        </div>
                     @endforeach
                 @endif
             </div>

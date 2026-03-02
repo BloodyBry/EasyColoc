@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Invitation;
+use App\Models\Payment;
 
 
 class Colocation extends Model
@@ -41,5 +42,10 @@ class Colocation extends Model
     public function invitations(): HasMany
     {
         return $this->hasMany(Invitation::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }
