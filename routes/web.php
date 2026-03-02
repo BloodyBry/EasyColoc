@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InvitationController;
 
 
 Route::get('/', function () {
@@ -48,6 +49,14 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/colocations/{colocation}/categories/{category}', [CategoryController::class, 'destroy'])
         ->name('categories.destroy');
+
+    
+    Route::get('/colocations/{colocation}/invitations', [InvitationController::class, 'index'])->name('invitations.index');
+    Route::post('/colocations/{colocation}/invitations', [InvitationController::class, 'store'])->name('invitations.store');
+
+    Route::get('/invite/{token}', [InvitationController::class, 'acceptForm'])->name('invitations.acceptForm');
+    Route::post('/invite/{token}', [InvitationController::class, 'accept'])->name('invitations.accept');
+
 });
 
 Route::middleware(['auth', 'global_admin'])->group(function () {

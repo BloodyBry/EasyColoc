@@ -41,7 +41,7 @@
                 </div>
             @endif
 
-            {{-- ✅ Bouton Dépenses --}}
+            {{-- Bouton Dépenses --}}
             <div class="mb-4 flex flex-wrap gap-3">
                 <a href="{{ route('expenses.index', $colocation) }}"
                    class="inline-block px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition">
@@ -53,6 +53,13 @@
                     <a href="{{ route('categories.index', $colocation) }}"
                        class="inline-block px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition">
                         Gérer les catégories
+                    </a>
+                @endif
+
+                @if($isOwner)
+                    <a href="{{ route('invitations.index', $colocation) }}"
+                    class="inline-block px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg shadow hover:bg-purple-700 transition">
+                        Invitations
                     </a>
                 @endif
             </div>
