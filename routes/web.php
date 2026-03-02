@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\CategoryController;
 
 
 Route::get('/', function () {
@@ -32,6 +34,20 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/colocations/{colocation}/leave', [ColocationController::class, 'leave'])
     ->name('colocations.leave');
+
+
+    Route::get('/colocations/{colocation}/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
+    Route::post('/colocations/{colocation}/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::delete('/colocations/{colocation}/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+
+    Route::get('/colocations/{colocation}/categories', [CategoryController::class, 'index'])
+    ->name('categories.index');
+
+    Route::post('/colocations/{colocation}/categories', [CategoryController::class, 'store'])
+        ->name('categories.store');
+
+    Route::delete('/colocations/{colocation}/categories/{category}', [CategoryController::class, 'destroy'])
+        ->name('categories.destroy');
 });
 
 Route::middleware(['auth', 'global_admin'])->group(function () {

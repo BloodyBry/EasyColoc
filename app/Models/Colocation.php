@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+use App\Models\Category;
+use App\Models\Expense;
 
 class Colocation extends Model
 {
@@ -19,4 +23,16 @@ class Colocation extends Model
     {
         return $this->belongsToMany(User::class)->withPivot(['role', 'joined_at', 'left_at'])->withTimestamps();
     }
+
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
 }

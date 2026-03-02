@@ -11,7 +11,7 @@
                     <form method="POST" action="{{ route('colocations.cancel', $colocation) }}">
                         @csrf
                         <button
-                            class="px-4 py-2 bg-red-600 text-black font-semibold rounded-lg shadow hover:bg-red-700 transition"
+                            class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition"
                             onclick="return confirm('Annuler la colocation ?')">
                             Annuler
                         </button>
@@ -22,7 +22,7 @@
                     <form method="POST" action="{{ route('colocations.leave', $colocation) }}">
                         @csrf
                         <button
-                            class="px-4 py-2 bg-orange-500 text-black font-semibold rounded-lg shadow hover:bg-orange-600 transition"
+                            class="px-4 py-2 bg-orange-500 text-white font-semibold rounded-lg shadow hover:bg-orange-600 transition"
                             onclick="return confirm('Quitter la colocation ?')">
                             Quitter
                         </button>
@@ -40,6 +40,22 @@
                     {{ session('status') }}
                 </div>
             @endif
+
+            {{-- ✅ Bouton Dépenses --}}
+            <div class="mb-4 flex flex-wrap gap-3">
+                <a href="{{ route('expenses.index', $colocation) }}"
+                   class="inline-block px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition">
+                    Voir / Ajouter des dépenses
+                </a>
+
+                {{-- (optionnel) bouton catégories si tu l’as déjà --}}
+                @if($isOwner)
+                    <a href="{{ route('categories.index', $colocation) }}"
+                       class="inline-block px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition">
+                        Gérer les catégories
+                    </a>
+                @endif
+            </div>
 
             <div class="bg-white p-6 shadow-sm sm:rounded-lg">
                 <h3 class="font-semibold text-lg mb-3">Membres actifs</h3>
