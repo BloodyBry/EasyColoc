@@ -62,6 +62,13 @@
                         Invitations
                     </a>
                 @endif
+        
+                @if($isOwner)
+                <a href="{{ route('colocations.balances', $colocation) }}"
+                    class="inline-block px-4 py-2 bg-yellow-600 text-white font-semibold rounded-lg shadow hover:bg-yellow-700 transition">
+                        Voir balances
+                </a>
+                @endif
             </div>
 
             <div class="bg-white p-6 shadow-sm sm:rounded-lg">
