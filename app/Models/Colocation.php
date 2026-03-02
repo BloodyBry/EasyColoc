@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Category;
 use App\Models\Expense;
+use App\Models\Invitation;
+
 
 class Colocation extends Model
 {
@@ -35,4 +37,9 @@ class Colocation extends Model
         return $this->hasMany(Expense::class);
     }
 
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
 }
