@@ -162,9 +162,6 @@ class ColocationController extends Controller
             ];
         }
 
-        // Appliquer les paiements :
-        // - le débiteur (from) remonte vers 0
-        // - le créancier (to) descend vers 0
         foreach ($payments as $p) {
             foreach ($balances as &$b) {
                 if ($b['member']->id === $p->from_user_id) {

@@ -60,6 +60,6 @@ class PaymentController extends Controller
             'paid_at' => now(),
         ]);
 
-        return back()->with('status', 'Paiement enregistré ✅');
+        return back()->with('status', 'Paiement enregistré');
     }
 }
